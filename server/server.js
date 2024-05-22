@@ -4,6 +4,7 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const db = require("./db");
+
 // Middlewares
 app.use(morgan("dev"));
 app.use(express.json());
@@ -12,24 +13,53 @@ const port = process.env.PORT;
 
 // Get all restaurants
 app.get("/api/v1/restaurants", async (req, res) => {
-  const result = await db.query("SELECT * FROM restaurants");
-  console.log(result);
-  res.status(200).json({
-    status: "success",
-    data: {
-      resturant: ["mcdonalds,kfc"],
-    },
-  });
+  try {
+    const result = await db.query("SELECT * FROM restaurants");
+    console.log(result);
+    res.status(200).json({
+      status: "success",
+      data: result.rows,
+      results: result.rows.length,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 // Get a Resturant
-app.get("/api/v1/restaurants/:id", (req, res) => {
-  console.log(req);
-  res.send(req.params);
+app.get("/api/v1/restaurants/:id", async (req, res) => {
+  console.log(req.params);
+  try {
+    const result = await db.query("SELECT * FROM restaurants WHERE id=$1", [
+      req.params.id,
+    ]);
+    console.log(result);
+    res.status(200).send({
+      status: "success",
+      results: result.rowCount,
+      data: result.rows[0],
+    });
+  } catch (error) {}
 });
 
 // Create a resturant
-app.post("/api/v1/restaurants", (req, res) => {});
+app.post("/api/v1/restaurants", async (req, res) => {
+  try {
+    console.log(req.body);
+    const result = await db.query(
+      "INSERT INTO restaurants(name,price_range,location) VALUES($1,$2,$3) returning *",
+      [req.body.name, req.body.price_range, req.body.location]
+    );
+    console.log("DB Response", result);
+    res.status(200).send({
+      results: result.rowCount,
+      data: result.rows[0],
+      status: "success",
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
 app.post("/a", (req, res) => {
   console.log("Oki");
 });
