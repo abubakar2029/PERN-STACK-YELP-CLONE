@@ -35,3 +35,14 @@ INSERT INTO restaurants (name, price_range, location) VALUES
 ('Restaurant A', 3, 'Location X'),
 ('Restaurant B', 5, 'Location Y'),
 ('Restaurant C', 1, 'Location Z');
+
+
+-- CREATE REVIEWS
+CREATE TABLE reviews(
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    review TEXT NOT NULL,
+    rating INT NOT NULL check(rating>=1 and rating<=5)
+);
+
+DROP TABLE reviews;

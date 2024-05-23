@@ -35,7 +35,7 @@ app.get("/api/v1/restaurants/:id", async (req, res) => {
     const result = await db.query("SELECT * FROM restaurants WHERE id=$1", [
       req.params.id,
     ]);
-    console.log(result);
+    console.log("GEt a restaurant : ", result);
     res.status(200).send({
       status: "success",
       results: result.rowCount,
