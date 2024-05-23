@@ -1,13 +1,15 @@
 require("dotenv").config();
 const express = require("express");
-
-const app = express();
+const cors = require("cors");
 const morgan = require("morgan");
 const db = require("./db");
+
+const app = express();
 
 // Middlewares
 app.use(morgan("dev"));
 app.use(express.json());
+app.use(cors());
 
 const port = process.env.PORT;
 
@@ -65,19 +67,35 @@ app.post("/a", (req, res) => {
 });
 
 // Update a Resturant
-app.put("/api/v1/restaurants/:id", (req, res) => {
-  console.log(req.body);
-  res.status(200).send({
-    status: "success",
-  });
+app.put("/api/v1/restaurants/:id", async (req, res) => {
+  try {
+    const result = await db.query(
+      "UPDATE restaurants SET name=$1, price_range=$2, location=$3 WHERE id=$4 returning *",
+      [req.body.name, req.body.price_range, req.body.location, req.params.id]
+    );
+    res.status(200).send({
+      status: "success",
+      data: result.rows[0],
+    });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 // Delete a Resturant
-app.delete("/api/v1/restaurants/:id", (req, res) => {
-  console.log(req.body);
-  res.status(200).send({
-    status: "resturant deleted",
-  });
+app.delete("/api/v1/restaurants/:id", async (req, res) => {
+  try {
+    const result = await db.query(
+      "DELETE FROM  restaurants WHERE id=$1 returning *",
+      [req.params.id]
+    );
+    res.status(200).send({
+      status: "success",
+      data: result.rows[0],
+    });
+  } catch (error) {
+    console.log(error);
+  }
 });
 app.listen(port, () => {
   console.log(`App is listening on PORT ${port}`);
