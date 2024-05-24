@@ -16,8 +16,8 @@ function AddResturant() {
         location,
         price_range: priceRange,
       });
-      addRestaurants(response.data.data.restaurant);
-      console.log("Create Restaurant Api response", response);
+      addRestaurants(response.data.data);
+      console.log("Create Restaurant Api response", response.data.data);
     } catch (error) {
       console.log(error);
     }

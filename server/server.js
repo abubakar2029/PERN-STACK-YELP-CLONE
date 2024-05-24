@@ -62,9 +62,6 @@ app.post("/api/v1/restaurants", async (req, res) => {
     console.log(error);
   }
 });
-app.post("/a", (req, res) => {
-  console.log("Oki");
-});
 
 // Update a Resturant
 app.put("/api/v1/restaurants/:id", async (req, res) => {

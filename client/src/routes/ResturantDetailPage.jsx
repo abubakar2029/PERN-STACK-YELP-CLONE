@@ -13,7 +13,7 @@ function ResturantDetailPage() {
     const fetchData = async () => {
       try {
         const response = await RestaurantFinder.get(`${id}`);
-        console.log("Detail page api response", response);
+        console.log("Detail page api response", response.data.data);
         setSelectedRestaurant(response.data.data);
       } catch (error) {
         console.log(error);
@@ -21,29 +21,30 @@ function ResturantDetailPage() {
     };
     fetchData();
   }, []);
+  useEffect(() => {
+    console.log("selectedrestaurant : ", selectedrestaurant);
+  }, [selectedrestaurant]);
 
-    return (
-      <div>
-        {selectedrestaurant && (
-          <>
-            <h1 className="text-center display-1">
-              {selectedrestaurant.restaurant.name}
-            </h1>
-            <div className="text-center">
-              <StarRating rating={selectedrestaurant.restaurant.average_rating} />
-              <span className="text-warning ml-1">
-                {selectedrestaurant.restaurant.count
-                  ? `(${selectedrestaurant.restaurant.count})`
-                  : "(0)"}
-              </span>
-            </div>
-            <div className="mt-3">
-              <Reviews reviews={selectedrestaurant.reviews} />
-            </div>
-            {/* <AddReview /> */}
-          </>
-        )}
-      </div>
+  return (
+    <div>
+      {selectedrestaurant && (
+        <>
+          <h1 className="text-center display-1">{selectedrestaurant.name}</h1>
+          <div className="text-center">
+            <StarRating rating={selectedrestaurant.average_rating} />
+            <span className="text-warning ml-1">
+              {selectedrestaurant.count
+                ? `(${selectedrestaurant.count})`
+                : "(0)"}
+            </span>
+          </div>
+          <div className="mt-3">
+            {/* <Reviews reviews={selectedrestaurant.reviews} /> */}
+          </div>
+          {/* <AddReview /> */}
+        </>
+      )}
+    </div>
   );
 }
 
